@@ -72,13 +72,25 @@
 conda install -c conda-forge opencv
 ```
 
-
 這段程式碼使用OpenCV讀取YoloV3訓練出來的模型，首先我們需要先引用OpenCV和Numpy，再來利用opencv呼叫出訓練好的模型和參數檔並變成一個Network
 ```
 import cv2
 import numpy as np
 net = cv2.dnn.readNetFromDarknet("yolov3.cfg","yolov3_mask.weights")
 ```
+
+這裡把net每個層的名稱都放到Layer_names這個變數裡面，然後把卷積神經網路(CNN)裡面各個卷積層的名稱列出來
+```
+layer_names = net.getLayerNames()
+print(layer_names)
+```
+
+透過YoloV3來計算產生3種不同尺寸的輸出，存到output_layers並顯示出來
+```
+output_layers = [layer_names[i[0] - 1] for i in net.getUnconnectedOutLayers()]
+output_layers
+```
+
 執行結果
 --------
 	自動提醒水壺實拍	
