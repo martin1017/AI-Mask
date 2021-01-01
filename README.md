@@ -91,6 +91,68 @@ output_layers = [layer_names[i[0] - 1] for i in net.getUnconnectedOutLayers()]
 output_layers
 ```
 
+讀取obj.names裡面的參數，並設定三種戴口罩形式的類別顏色，分別是不戴口罩的會使用藍色標記，沒戴好口罩會是紅色標記，有戴好口罩標記成綠色
+```
+classes = [line.strip() for line in open("obj.names")]
+colors = [(0,0,255),(255,0,0),(0,255,0)]
+```
+
+讀取我們的測試圖片並顯示出來
+```
+from PIL import Image
+Image.open('test.jpg')
+```
+
+利用cv2.imread把測試照片讀取進來並存成numpy形式的數學矩陣，印出矩陣大小和顏色形式
+```
+img = cv2.imread("test.jpg")
+img.shape
+```
+
+利用OpenCV來對測試照片進行縮放和標準化，這裡設定中等速度和精準度來辨識口罩(YoloV3有三檔辨識速度，分別是320、416、608三檔)，
+再來切換色彩排序，因為測試用圖片是RGB色階，但是在辨識過程需要BGR排列的圖片，所以我們要交換色彩排序
+```
+img = cv2.resize(img, None, fx=0.4, fy=0.4)
+height, width, channels = img.shape 
+blob = cv2.dnn.blobFromImage(img, 1/255.0, (416, 416), (0, 0, 0), True, crop=False)
+net.setInput(blob)
+outs = net.forward(output_layers)
+```
+
+將產生輸出存到Output後顯示出來大小
+```
+len(outs)
+```
+
+顯示輸出大小
+```
+outs[0].shape
+```
+
+這段是把辨識出來的物件框選出來，使用np.argmax取出擁有最大值的類別，利用已經設定好的篩選條件辨識需要的口罩物件
+```
+class_ids = []
+confidences = []
+boxes = []
+    
+for out in outs:
+    for detection in out:
+        tx, ty, tw, th, confidence = detection[0:5]
+        scores = detection[5:]
+        class_id = np.argmax(scores)  
+        if confidence > 0.3:   
+            center_x = int(tx * width)
+            center_y = int(ty * height)
+            w = int(tw * width)
+            h = int(th * height)
+            x = int(center_x - w / 2)
+            y = int(center_y - h / 2)
+            boxes.append([x, y, w, h])
+            confidences.append(float(confidence))
+            class_ids.append(class_id)
+```
+
+
 執行結果
 --------
 	自動提醒水壺實拍	
