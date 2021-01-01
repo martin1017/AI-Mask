@@ -63,7 +63,7 @@
 
 研究方法
 ------
-<img src="https://github.com/martin1017/AI-Mask/blob/master/Screenshot/setup.PNG" alt="setup" width="80%">
+<img src="https://github.com/martin1017/AI-Mask/blob/main/Screenshot/setup.png" alt="setup" width="80%">
 
 程式截圖
 ----------
