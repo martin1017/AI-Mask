@@ -72,6 +72,7 @@
 conda install -c conda-forge opencv
 ```
 
+
 這段程式碼使用OpenCV讀取YoloV3訓練出來的模型，首先我們需要先引用OpenCV和Numpy，再來利用opencv呼叫出訓練好的模型和參數檔並變成一個Network
 ```
 import cv2
