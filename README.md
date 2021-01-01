@@ -63,10 +63,7 @@
 
 研究方法
 ------
-	電腦連接D1 MIMI，
-	水位感測器量測水位，
-	把數值回傳到D1 MINI分析計算水位，
-	再來透過連接網路使用IFTTT傳送提醒到使用者的LINE。
+<img src="https://github.com/martin1017/AI-Mask/blob/master/Screenshot/研究方法.PNG" alt="setup" width="80%">
 
 程式截圖
 ----------
