@@ -67,15 +67,16 @@
 
 程式解說
 ----------
-首先們需要先利用Anaconda Prompt來安裝Opencv套件
+首先們需要先利用Anaconda Prompt來安裝OpenCV套件，可以輸入下面程式碼來安裝
 ```
 conda install -c conda-forge opencv
-
 ```
 
-
+這段程式碼使用OpenCV讀取YoloV3訓練出來的模型，首先我們需要先引用OpenCV和Numpy，再來利用opencv呼叫出訓練好的模型和參數檔並變成一個Network
 ```
-http://download.labs.mediatek.com/package_mtk_linkit_7697_index.json
+import cv2
+import numpy as np
+net = cv2.dnn.readNetFromDarknet("yolov3.cfg","yolov3_mask.weights")
 ```
 執行結果
 --------
