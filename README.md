@@ -65,13 +65,18 @@
 ------
 <img src="https://github.com/martin1017/AI-Mask/blob/master/Screenshot/研究方法.PNG" alt="setup" width="80%">
 
-程式截圖
+程式解說
 ----------
-<img src="https://github.com/martin1017/D1-MINI-PROJECT/blob/master/SCREENSHOT/setup.PNG" alt="setup" width="80%">
+首先們需要先利用Anaconda Prompt來安裝Opencv套件
+```
+conda install -c conda-forge opencv
 
-<img src="https://github.com/martin1017/D1-MINI-PROJECT/blob/master/SCREENSHOT/loop.PNG" alt="loop" width="%">
+```
 
 
+```
+http://download.labs.mediatek.com/package_mtk_linkit_7697_index.json
+```
 執行結果
 --------
 	自動提醒水壺實拍	
