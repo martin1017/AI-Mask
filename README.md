@@ -182,7 +182,6 @@ plt.imshow(img_rgb)
 執行結果
 --------
 這邊我們需要把上面程式分段解說的各程式碼整合起來丟到OpenCV裡面去做到實時口罩辨識
-程式碼如下
 ```
 import cv2
 import numpy as np
