@@ -149,11 +149,104 @@ for out in outs:
             class_ids.append(class_id)
 ```
 
+顯示偵測到的物件有幾個
+```
+len(boxes)
+```
+
+篩選信心度低於閥值的物件，提高準確度
+```
+indexes = cv2.dnn.NMSBoxes(boxes, confidences, 0.3, 0.4)
+```
+
+利用OpenCV的繪製線條功能把篩選出來的物件畫上對應顏色的框
+```
+font = cv2.FONT_HERSHEY_PLAIN
+for i in range(len(boxes)):
+    if i in indexes:
+        x, y, w, h = boxes[i]
+        label = str(class_ids[i])
+        color = colors[class_ids[i]]
+        cv2.rectangle(img, (x, y), (x + w, y + h), color, 1)
+```
+
+最終辨識結果
+```
+%pylab inline
+from matplotlib import pyplot as plt
+plt.rcParams['figure.figsize'] = [15, 10]
+img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+plt.imshow(img_rgb)
+```
 
 執行結果
 --------
+這邊我們需要把上面程式分段解說的各程式碼整合起來丟到OpenCV裡面去做到實時口罩辨識
+程式碼如下
+```
+import cv2
+import numpy as np
+net = cv2.dnn.readNetFromDarknet("yolov3.cfg","yolov3_mask.weights")
+layer_names = net.getLayerNames()
+output_layers = [layer_names[i[0] - 1] for i in net.getUnconnectedOutLayers()]
+classes = [line.strip() for line in open("obj.names")]
+colors = [(0,0,255),(255,0,0),(0,255,0)]
 
+def yolo_detect(frame):
+    img = cv2.resize(frame, None, fx=0.4, fy=0.4)
+    height, width, channels = img.shape 
+    blob = cv2.dnn.blobFromImage(img, 1/255.0, (416, 416), (0, 0, 0), True, crop=False)
+    net.setInput(blob)
+    outs = net.forward(output_layers)
 
+    class_ids = []
+    confidences = []
+    boxes = []
+    
+    for out in outs:
+        for detection in out:
+            tx, ty, tw, th, confidence = detection[0:5]
+            scores = detection[5:]
+            class_id = np.argmax(scores)  
+            if confidence > 0.3:   
+                center_x = int(tx * width)
+                center_y = int(ty * height)
+                w = int(tw * width)
+                h = int(th * height)
+                x = int(center_x - w / 2)
+                y = int(center_y - h / 2)
+                boxes.append([x, y, w, h])
+                confidences.append(float(confidence))
+                class_ids.append(class_id)
+                
+    indexes = cv2.dnn.NMSBoxes(boxes, confidences, 0.3, 0.4)
+    font = cv2.FONT_HERSHEY_PLAIN
+    for i in range(len(boxes)):
+        if i in indexes:
+            x, y, w, h = boxes[i]
+            label = str(class_ids[i])
+            color = colors[class_ids[i]]
+            cv2.rectangle(img, (x, y), (x + w, y + h), color, 1)
+    return img
+```
+
+```
+import cv2
+import imutils
+import time
+
+VIDEO_IN = cv2.VideoCapture(0)
+
+while True:
+    hasFrame, frame = VIDEO_IN.read()
+    img = yolo_detect(frame)
+    cv2.imshow("Frame", imutils.resize(img, width=850))
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+        
+VIDEO_IN.release()
+cv2.destroyAllWindows()
+```
 
 專案心得
 ----------
